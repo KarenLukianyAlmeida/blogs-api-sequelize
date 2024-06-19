@@ -1,8 +1,8 @@
 const { User } = require('../models');
 
-const getUserByPassword = async (password) => {
+const getUserByPassword = async (email) => {
   const user = await User.findOne({
-    where: { password },
+    where: { email },
   });
 
   return user;
