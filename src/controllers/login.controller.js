@@ -1,10 +1,8 @@
-const jwt = require('jsonwebtoken');
-
-const secret = process.env.JWT_SECRET;
-
 const errorMessage = { message: 'Erro Interno!' };
 
 const { UserService } = require('../services');
+
+const { createToken } = require('../utils/createToken');
 
 const validateBody = (body, res) => {
   const { email, password } = body;
@@ -40,7 +38,7 @@ const getToken = async (req, res) => {
 
     if (!validateUserOrPassword(user, password, res)) return;
 
-    const token = jwt.sign({ data: { userId: user.id } }, secret);
+    const token = createToken(user.id);
 
     return res.status(200).json({ token });
   } catch (e) {
