@@ -5,7 +5,6 @@ const errorMessage = { message: 'Erro Interno!' };
 const addCategory = async (req, res) => {
   try {
     const nameData = req.body;
-    console.log('NAME: ', nameData);
     const { status, data } = await CategoryService.addCategory(nameData);
 
     return res.status(status).json(data);
@@ -15,6 +14,17 @@ const addCategory = async (req, res) => {
   }
 };
 
+const getCategories = async (_req, res) => {
+  try {
+    const { status, data } = await CategoryService.getCategories();
+    return res.status(status).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json(errorMessage);
+  }
+};
+
 module.exports = {
   addCategory,
+  getCategories,
 };
