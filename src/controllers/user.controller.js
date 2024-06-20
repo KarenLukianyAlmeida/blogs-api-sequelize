@@ -5,10 +5,22 @@ const errorMessage = { message: 'Erro Interno!' };
 const getUsers = async (req, res) => {
   try {
     const { status, data } = await UserService.getUsers();
-
+    console.log('REQ: ', req.locals.user);
     return res.status(status).json(data);
   } catch (e) {
     console.log(e);
+    return res.status(500).json(errorMessage);
+  }
+};
+
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, data } = await UserService.getUserById(id);
+
+    return res.status(status).json(data);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json(errorMessage);
   }
 };
@@ -29,4 +41,5 @@ const createUser = async (req, res) => {
 module.exports = {
   createUser,
   getUsers,
+  getUserById,
 };

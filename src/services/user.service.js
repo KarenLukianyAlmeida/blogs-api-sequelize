@@ -6,8 +6,17 @@ const { createToken } = require('../utils/jwt.utils');
 const getUsers = async () => {
   const users = await User.findAll({ attributes: { exclude: ['password'] } });
   const formatedUsers = users.map((user) => user.dataValues);
-  console.log('USERS: ', formatedUsers);
   return { status: 200, data: formatedUsers };
+};
+
+const getUserById = async (id) => {
+  const user = await User.findOne({
+    where: { id },
+    attributes: { exclude: ['password'] },
+  });
+  if (!user) return { status: 404, data: { message: 'User does not exist' } };
+
+  return { status: 200, data: user.dataValues };
 };
 
 const getUserByEmail = async (email) => {
@@ -45,4 +54,5 @@ module.exports = {
   getUserByEmail,
   createUser,
   getUsers,
+  getUserById,
 };
