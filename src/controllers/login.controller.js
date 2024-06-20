@@ -37,7 +37,8 @@ const login = async (req, res) => {
     const user = await UserService.getUserByEmail(email);
     if (!validateUserOrPassword(user, password, res)) return;
     
-    const token = createToken({ displayName: user.dataValues.displayName,
+    const token = createToken({ id: user.dataValues.id,
+      displayName: user.dataValues.displayName,
       email: user.dataValues.email });
 
     return res.status(200).json({ token });

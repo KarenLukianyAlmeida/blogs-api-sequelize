@@ -9,7 +9,7 @@ const createToken = (userData) => {
 };
 
 const verifyToken = (token) => {
-  const decodedToken = jwt.decode(token, secret);
+  const decodedToken = jwt.verify(token, secret);
   return decodedToken;
 };
 

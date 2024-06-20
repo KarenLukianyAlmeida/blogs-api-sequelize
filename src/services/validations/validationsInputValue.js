@@ -31,9 +31,15 @@ const validateUserOrPassword = (user, password) => {
   }
 };
 
+const validateEmail = (email) => {
+  const pattern = /^[^@]+@[^@]+$/;
+  return pattern.test(email);
+};
+
 module.exports = {
   validateDisplayName,
   validatePassword,
   validateBody,
   validateUserOrPassword,
+  validateEmail,
 };

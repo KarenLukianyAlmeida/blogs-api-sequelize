@@ -3,16 +3,17 @@ const schema = require('./validations/validationsInputValue');
 
 const { createToken } = require('../utils/jwt.utils');
 
-const getUserByEmail = async (email) => {
-  const user = await User.findOne({ where: { email } });
-
-  return user;
+const getUsers = async () => {
+  const users = await User.findAll({ attributes: { exclude: ['password'] } });
+  const formatedUsers = users.map((user) => user.dataValues);
+  console.log('USERS: ', formatedUsers);
+  return { status: 200, data: formatedUsers };
 };
 
-function validateEmail(email) {
-  const pattern = /^[^@]+@[^@]+$/;
-  return pattern.test(email);
-}
+const getUserByEmail = async (email) => {
+  const user = await User.findOne({ where: { email } });
+  return user;
+};
 
 const createUser = async ({ displayName, email, password, image }) => {
   const errorName = schema.validateDisplayName(displayName);
@@ -21,7 +22,7 @@ const createUser = async ({ displayName, email, password, image }) => {
       data: { message: '"displayName" length must be at least 8 characters long' } };
   }
 
-  const isEmailValid = validateEmail(email);
+  const isEmailValid = schema.validateEmail(email);
   if (!isEmailValid) return { status: 400, data: { message: '"email" must be a valid email' } };
 
   const errorPass = schema.validatePassword(password);
@@ -43,4 +44,5 @@ const createUser = async ({ displayName, email, password, image }) => {
 module.exports = {
   getUserByEmail,
   createUser,
+  getUsers,
 };
