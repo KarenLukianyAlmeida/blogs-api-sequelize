@@ -1,9 +1,9 @@
 const { User } = require('../models');
 const schema = require('./validations/validationsInputValue');
 
-const { createToken } = require('../utils/createToken');
+const { createToken } = require('../utils/jwt.utils');
 
-const getUserByPassword = async (email) => {
+const getUserByEmail = async (email) => {
   const user = await User.findOne({ where: { email } });
 
   return user;
@@ -26,21 +26,21 @@ const createUser = async ({ displayName, email, password, image }) => {
 
   const errorPass = schema.validatePassword(password);
   if (errorPass) {
-    return {
-      status: errorPass.status,
+    return { status: errorPass.status,
       data: { message: '"password" length must be at least 6 characters long' } };
   } 
 
-  const isEmailExists = await getUserByPassword(email);
+  const isEmailExists = await getUserByEmail(email);
   if (isEmailExists) return { status: 409, data: { message: 'User already registered' } };
 
   const newUser = await User.create({ displayName, email, password, image });
-  const token = createToken(newUser.id);
+  const token = createToken({ displayName: newUser.dataValues.displayName,
+    email: newUser.dataValues.email });
 
   return { status: 201, data: { token } };
 };
 
 module.exports = {
-  getUserByPassword,
+  getUserByEmail,
   createUser,
 };
