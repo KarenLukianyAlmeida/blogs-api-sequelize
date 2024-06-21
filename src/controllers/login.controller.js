@@ -1,21 +1,9 @@
 const errorMessage = { message: 'Erro Interno!' };
 
 const { UserService } = require('../services');
+const checkRequiredFields = require('../utils/checkRequiredFields');
 
 const { createToken } = require('../utils/jwt.utils');
-
-const validateBody = (body, res) => {
-  const { email, password } = body;
-
-  if (!email || !password) {
-    res
-      .status(400)
-      .json({ message: 'Some required fields are missing' });
-    return false;
-  }
-
-  return true;
-};
 
 const validateUserOrPassword = (user, password, res) => {
   if (!user || user.password !== password) {
@@ -32,7 +20,10 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!validateBody(req.body, res)) return;
+    const missingFields = checkRequiredFields(req.body);
+    if (missingFields) {
+      return res.status(missingFields.status).json(missingFields.data);
+    }
 
     const user = await UserService.getUserByEmail(email);
     if (!validateUserOrPassword(user, password, res)) return;

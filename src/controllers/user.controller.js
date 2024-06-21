@@ -5,7 +5,7 @@ const errorMessage = { message: 'Erro Interno!' };
 const getUsers = async (req, res) => {
   try {
     const { status, data } = await UserService.getUsers();
-    console.log('REQ: ', req.locals.user);
+    
     return res.status(status).json(data);
   } catch (e) {
     console.log(e);

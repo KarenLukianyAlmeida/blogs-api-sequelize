@@ -17,14 +17,6 @@ const validatePassword = (password) => {
   }
 };
 
-const validateBody = (body) => {
-  const { email, password } = body;
-
-  if (!email || !password) {
-    return { status: 400, message: 'Some required fields are missing' };
-  }
-};
-
 const validateUserOrPassword = (user, password) => {
   if (!user || user.password !== password) {
     return { status: 400, message: 'Invalid fields' };
@@ -39,7 +31,6 @@ const validateEmail = (email) => {
 module.exports = {
   validateDisplayName,
   validatePassword,
-  validateBody,
   validateUserOrPassword,
   validateEmail,
 };

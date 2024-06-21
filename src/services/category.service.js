@@ -17,7 +17,17 @@ const getCategories = async () => {
   return { status: 200, data: formatedCategories };
 };
 
+const getCategoryById = async (id) => {
+  const category = await Category.findOne({ 
+    where: { id },
+  });
+  if (!category) return false;
+  
+  return category.dataValues;
+};
+
 module.exports = {
   addCategory,
   getCategories,
+  getCategoryById,
 };
