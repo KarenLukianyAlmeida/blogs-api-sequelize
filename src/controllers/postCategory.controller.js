@@ -1,4 +1,4 @@
-const { PostCategoryService } = require('../services');
+const { PostCategoryService, BlogPostService } = require('../services');
 
 const errorMessage = { message: 'Erro Interno!' };
 
@@ -8,7 +8,29 @@ const insertPost = async (req, res) => {
     const { id } = req.locals.user;
 
     const dataPost = { title, content, categoryIds };
-    const { status, data } = await PostCategoryService.createPost(dataPost, id);
+    const { status, data } = await BlogPostService.createPost(dataPost, id);
+
+    return res.status(status).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json(errorMessage);
+  }
+};
+
+const getPosts = async (_req, res) => {
+  try {
+    const posts = await PostCategoryService.getPosts();
+    return res.status(200).json(posts);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).jason(errorMessage);
+  }
+};
+
+const getPostById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, data } = await PostCategoryService.getPostById(id);
 
     return res.status(status).json(data);
   } catch (e) {
@@ -19,4 +41,6 @@ const insertPost = async (req, res) => {
 
 module.exports = {
   insertPost,
+  getPosts,
+  getPostById,
 };

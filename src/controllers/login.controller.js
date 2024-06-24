@@ -30,7 +30,8 @@ const login = async (req, res) => {
     
     const token = createToken({ id: user.dataValues.id,
       displayName: user.dataValues.displayName,
-      email: user.dataValues.email });
+      email: user.dataValues.email,
+      image: user.dataValues.image });
 
     return res.status(200).json({ token });
   } catch (e) {

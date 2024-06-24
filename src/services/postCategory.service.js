@@ -1,6 +1,4 @@
-const { BlogPost, PostCategory } = require('../models');
-const CategoryService = require('./category.service');
-const checkRequiredFields = require('../utils/checkRequiredFields');
+const { BlogPost, PostCategory, User, Category } = require('../models');
 
 const insertPostCategory = async (postId, categoryId) => {
   const newPostBlog = await PostCategory.create({ postId, categoryId });
@@ -8,35 +6,52 @@ const insertPostCategory = async (postId, categoryId) => {
   return newPostBlog.dataValues;
 };
 
-const createPost = async (dataPost, userId) => {
-  const { title, content, categoryIds } = dataPost;
+const getPosts = async () => {
+  const posts = await BlogPost.findAll({
+    include: [{
+      model: User,
+      as: 'user',
+      attributes: ['id', 'displayName', 'email', 'image'],
+    },
+    {
+      model: Category,
+      as: 'categories',
+      attributes: ['id', 'name'],
+      through: { attributes: [] },
+    }],
+  });
 
-  const missingFields = checkRequiredFields(dataPost);
-  if (missingFields) {
-    return { status: missingFields.status, data: missingFields.data };
-  }
+  const formatedPosts = posts.map((post) => post.dataValues);
 
-  // map to verify if all categories exists //
-  const verifyCategory = await Promise.all(await categoryIds.map(async (category) => {
-    const exist = await CategoryService.getCategoryById(category);
-    if (!exist) {
-      return { status: 400, data: { message: 'one or more "categoryIds" not found' } };
-    }
-    return category;
-  }));
+  return formatedPosts;
+};
 
-  const errorCategory = verifyCategory.find((item) => typeof item === 'object');
-  if (errorCategory) return errorCategory;
+const getPostById = async (id) => {
+  const postExists = await BlogPost.findOne({ where: { id } });
+  if (!postExists) return { status: 404, data: { message: 'Post does not exist' } };
 
-  // ---- ADD DATA ON POSTS_CATEGORIES ---- //
-  const post = await BlogPost.create({ title, content, userId });
-  
-  // ---- ADD DATA ON POSTS_CATEGORIES ---- //
-  await categoryIds.map((categoryId) => insertPostCategory(post.dataValues.id, categoryId));
+  const post = await BlogPost.findOne({
+    where: { id },
+    include: [{
+      model: User,
+      as: 'user',
+      attributes: ['id', 'displayName', 'email', 'image'],
+    },
+    {
+      model: Category,
+      as: 'categories',
+      attributes: ['id', 'name'],
+      through: { attributes: [] },
+    }],
+  });
 
-  return { status: 201, data: post.dataValues };
+  const formatedPost = post.dataValues;
+
+  return { status: 200, data: formatedPost };
 };
 
 module.exports = {
-  createPost,
+  insertPostCategory,
+  getPosts,
+  getPostById,
 };
