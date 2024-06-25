@@ -1,24 +1,18 @@
 const { BlogPost, PostCategory, User, Category } = require('../models');
+const checkRequiredFields = require('../utils/checkRequiredFields');
 
 const insertPostCategory = async (postId, categoryId) => {
-  const newPostBlog = await PostCategory.create({ postId, categoryId });
+  const newPostBlog = await PostCategory.create({ postId, categoryId }).dataValues;
 
-  return newPostBlog.dataValues;
+  return newPostBlog;
 };
 
 const getPosts = async () => {
   const posts = await BlogPost.findAll({
     include: [{
-      model: User,
-      as: 'user',
-      attributes: ['id', 'displayName', 'email', 'image'],
-    },
+      model: User, as: 'user', attributes: ['id', 'displayName', 'email', 'image'] },
     {
-      model: Category,
-      as: 'categories',
-      attributes: ['id', 'name'],
-      through: { attributes: [] },
-    }],
+      model: Category, as: 'categories', attributes: ['id', 'name'], through: { attributes: [] } }],
   });
 
   const formatedPosts = posts.map((post) => post.dataValues);
@@ -33,16 +27,9 @@ const getPostById = async (id) => {
   const post = await BlogPost.findOne({
     where: { id },
     include: [{
-      model: User,
-      as: 'user',
-      attributes: ['id', 'displayName', 'email', 'image'],
-    },
+      model: User, as: 'user', attributes: ['id', 'displayName', 'email', 'image'] },
     {
-      model: Category,
-      as: 'categories',
-      attributes: ['id', 'name'],
-      through: { attributes: [] },
-    }],
+      model: Category, as: 'categories', attributes: ['id', 'name'], through: { attributes: [] } }],
   });
 
   const formatedPost = post.dataValues;
@@ -50,8 +37,25 @@ const getPostById = async (id) => {
   return { status: 200, data: formatedPost };
 };
 
-module.exports = {
-  insertPostCategory,
-  getPosts,
-  getPostById,
+const getPostByTitle = async (title, content, userId) => {
+  const postExists = await BlogPost.findOne({ where: { title } }).dataValues;
+  if (!postExists) return { status: 404, data: { message: 'Post does not exist' } };
+
+  if (postExists.userId !== userId) {
+    return { status: 401, data: { message: 'Unauthorized user' } };
+  }
+
+  const missingFields = checkRequiredFields({ title, content });
+  if (missingFields) {
+    return { status: missingFields.status, data: missingFields.data };
+  }
+
+  const formatedPost = await getPostById(postExists.id);
+  return formatedPost;
 };
+
+// const updatePost = async (title, content, userId) => {
+
+// };
+
+module.exports = { insertPostCategory, getPosts, getPostById, getPostByTitle };

@@ -27,6 +27,7 @@ app.get('/categories', authorizationMiddleware, CategoryController.getCategories
 app.post('/post', authorizationMiddleware, PostCategoryController.insertPost);
 app.get('/post', authorizationMiddleware, PostCategoryController.getPosts);
 app.get('/post/:id', authorizationMiddleware, PostCategoryController.getPostById);
+// app.put('/post/:id', authorizationMiddleware, );
 
 // É importante exportar a constante `app`,
 // para que possa ser utilizada pelo arquivo `src/server.js`

@@ -39,8 +39,22 @@ const getPostById = async (req, res) => {
   }
 };
 
+// const updatePost = async (req, res) => {
+//   try {
+//     const { title, content } = req.body;
+//     const { id } = req.locals.user;
+//     const { status, data } = await
+
+//     return res.status(status).json(data);
+//   } catch (e) {
+//     console.log(e);
+//     return res.status(500).json(errorMessage);
+//   }
+// };
+
 module.exports = {
   insertPost,
   getPosts,
   getPostById,
+  // updatePost,
 };

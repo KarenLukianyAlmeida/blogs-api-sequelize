@@ -1,6 +1,6 @@
 const { BlogPost } = require('../models');
 const CategoryService = require('./category.service');
-const InsertPostCategory = require('./postCategory.service');
+const { insertPostCategory } = require('./postCategory.service');
 const checkRequiredFields = require('../utils/checkRequiredFields');
 
 const createPost = async (dataPost, userId) => {
@@ -27,10 +27,12 @@ const createPost = async (dataPost, userId) => {
   const post = await BlogPost.create({ title, content, userId });
   
   // ---- ADD DATA ON POSTS_CATEGORIES ---- //
-  await categoryIds.map((categoryId) => InsertPostCategory(post.dataValues.id, categoryId));
+  await categoryIds.map((categoryId) => insertPostCategory(post.dataValues.id, categoryId));
 
   return { status: 201, data: post.dataValues };
 };
+
+// const updatePost = async ()
 
 module.exports = {
   createPost,
