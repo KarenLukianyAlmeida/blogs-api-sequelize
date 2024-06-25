@@ -7,6 +7,7 @@ const {
   PostCategoryController,
 } = require('./controllers');
 const authorizationMiddleware = require('./middlewares/authorization.middleware');
+const validateRequiredFields = require('./middlewares/validateRequiredFields.middleware');
 
 const app = express();
 
@@ -18,13 +19,18 @@ app.use(express.json());
 
 // ...
 
-app.post('/login', LoginController.login);
+app.post('/login', validateRequiredFields, LoginController.login);
 app.post('/user', UserController.createUser);
 app.get('/user', authorizationMiddleware, UserController.getUsers);
 app.get('/user/:id', authorizationMiddleware, UserController.getUserById);
 app.post('/categories', authorizationMiddleware, CategoryController.addCategory);
 app.get('/categories', authorizationMiddleware, CategoryController.getCategories);
-app.post('/post', authorizationMiddleware, PostCategoryController.insertPost);
+app.post(
+  '/post',
+  authorizationMiddleware,
+  validateRequiredFields,
+  PostCategoryController.insertPost,
+);
 app.get('/post', authorizationMiddleware, PostCategoryController.getPosts);
 app.get('/post/:id', authorizationMiddleware, PostCategoryController.getPostById);
 // app.put('/post/:id', authorizationMiddleware, );

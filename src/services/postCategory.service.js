@@ -1,5 +1,4 @@
 const { BlogPost, PostCategory, User, Category } = require('../models');
-const checkRequiredFields = require('../utils/checkRequiredFields');
 
 const insertPostCategory = async (postId, categoryId) => {
   const newPostBlog = await PostCategory.create({ postId, categoryId }).dataValues;
@@ -43,11 +42,6 @@ const getPostByTitle = async (title, content, userId) => {
 
   if (postExists.userId !== userId) {
     return { status: 401, data: { message: 'Unauthorized user' } };
-  }
-
-  const missingFields = checkRequiredFields({ title, content });
-  if (missingFields) {
-    return { status: missingFields.status, data: missingFields.data };
   }
 
   const formatedPost = await getPostById(postExists.id);

@@ -1,15 +1,9 @@
 const { BlogPost } = require('../models');
 const CategoryService = require('./category.service');
 const { insertPostCategory } = require('./postCategory.service');
-const checkRequiredFields = require('../utils/checkRequiredFields');
 
 const createPost = async (dataPost, userId) => {
   const { title, content, categoryIds } = dataPost;
-
-  const missingFields = checkRequiredFields(dataPost);
-  if (missingFields) {
-    return { status: missingFields.status, data: missingFields.data };
-  }
 
   // map to verify if all categories exists //
   const verifyCategory = await Promise.all(await categoryIds.map(async (category) => {

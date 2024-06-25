@@ -1,7 +1,6 @@
 const errorMessage = { message: 'Erro Interno!' };
 
 const { UserService } = require('../services');
-const checkRequiredFields = require('../utils/checkRequiredFields');
 
 const { createToken } = require('../utils/jwt.utils');
 
@@ -19,11 +18,6 @@ const validateUserOrPassword = (user, password, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    const missingFields = checkRequiredFields(req.body);
-    if (missingFields) {
-      return res.status(missingFields.status).json(missingFields.data);
-    }
 
     const user = await UserService.getUserByEmail(email);
     if (!validateUserOrPassword(user, password, res)) return;
