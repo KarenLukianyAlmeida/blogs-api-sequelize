@@ -27,10 +27,9 @@ const getPosts = async (_req, res) => {
   }
 };
 
-const getPostById = async (req, res) => {
+const getPost = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status, data } = await PostCategoryService.getPostById(id);
+    const { status, data } = await PostCategoryService.getPost(req.params);
 
     return res.status(status).json(data);
   } catch (e) {
@@ -55,6 +54,6 @@ const getPostById = async (req, res) => {
 module.exports = {
   insertPost,
   getPosts,
-  getPostById,
+  getPost,
   // updatePost,
 };

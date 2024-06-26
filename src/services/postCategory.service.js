@@ -19,37 +19,17 @@ const getPosts = async () => {
   return formatedPosts;
 };
 
-const getPostById = async (id) => {
-  const postExists = await BlogPost.findOne({ where: { id } });
-  if (!postExists) return { status: 404, data: { message: 'Post does not exist' } };
-
+const getPost = async (postInfo) => {
   const post = await BlogPost.findOne({
-    where: { id },
+    where: postInfo,
     include: [{
       model: User, as: 'user', attributes: ['id', 'displayName', 'email', 'image'] },
     {
       model: Category, as: 'categories', attributes: ['id', 'name'], through: { attributes: [] } }],
   });
-
-  const formatedPost = post.dataValues;
-
-  return { status: 200, data: formatedPost };
+  if (!post) return { status: 404, data: { message: 'Post does not exist' } };
+  
+  return { status: 200, data: post.dataValues };
 };
 
-const getPostByTitle = async (title, content, userId) => {
-  const postExists = await BlogPost.findOne({ where: { title } }).dataValues;
-  if (!postExists) return { status: 404, data: { message: 'Post does not exist' } };
-
-  if (postExists.userId !== userId) {
-    return { status: 401, data: { message: 'Unauthorized user' } };
-  }
-
-  const formatedPost = await getPostById(postExists.id);
-  return formatedPost;
-};
-
-// const updatePost = async (title, content, userId) => {
-
-// };
-
-module.exports = { insertPostCategory, getPosts, getPostById, getPostByTitle };
+module.exports = { insertPostCategory, getPosts, getPost };

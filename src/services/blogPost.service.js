@@ -4,7 +4,7 @@ const { insertPostCategory } = require('./postCategory.service');
 
 const createPost = async (dataPost, userId) => {
   const { title, content, categoryIds } = dataPost;
-
+  console.log('CATEGORYIDS: ', categoryIds);
   // map to verify if all categories exists //
   const verifyCategory = await Promise.all(await categoryIds.map(async (category) => {
     const exist = await CategoryService.getCategoryById(category);
@@ -19,14 +19,12 @@ const createPost = async (dataPost, userId) => {
 
   // ---- ADD DATA ON POSTS_CATEGORIES ---- //
   const post = await BlogPost.create({ title, content, userId });
-  
+  console.log('POST: ', post);
   // ---- ADD DATA ON POSTS_CATEGORIES ---- //
   await categoryIds.map((categoryId) => insertPostCategory(post.dataValues.id, categoryId));
 
   return { status: 201, data: post.dataValues };
 };
-
-// const updatePost = async ()
 
 module.exports = {
   createPost,
