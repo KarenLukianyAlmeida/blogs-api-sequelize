@@ -33,6 +33,12 @@ app.post(
 );
 app.get('/post', authorizationMiddleware, PostCategoryController.getPosts);
 app.get('/post/:id', authorizationMiddleware, PostCategoryController.getPost);
+app.put(
+  '/post/:id',
+  authorizationMiddleware,
+  validateRequiredFields,
+  PostCategoryController.updatePost,
+);
 
 // É importante exportar a constante `app`,
 // para que possa ser utilizada pelo arquivo `src/server.js`

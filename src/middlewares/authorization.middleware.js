@@ -14,7 +14,6 @@ module.exports = (req, res, next) => {
     const token = extractToken(authorization);
     const user = jwtUtil.verifyToken(token);
     req.locals = { user };
-
     return next();
   } catch (e) {
     console.log(e);

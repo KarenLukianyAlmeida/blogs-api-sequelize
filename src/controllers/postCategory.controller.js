@@ -38,22 +38,18 @@ const getPost = async (req, res) => {
   }
 };
 
-// const updatePost = async (req, res) => {
-//   try {
-//     const { title, content } = req.body;
-//     const { id } = req.locals.user;
-//     const { status, data } = await
+const updatePost = async (req, res) => {
+  try {
+    const postData = req.body;
+    const id = req.params;
+    const userId = req.locals.user.id;
+    const { status, data } = await PostCategoryService.updatePost(id, userId, postData);
 
-//     return res.status(status).json(data);
-//   } catch (e) {
-//     console.log(e);
-//     return res.status(500).json(errorMessage);
-//   }
-// };
-
-module.exports = {
-  insertPost,
-  getPosts,
-  getPost,
-  // updatePost,
+    return res.status(status).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json(errorMessage);
+  }
 };
+
+module.exports = { insertPost, getPosts, getPost, updatePost };

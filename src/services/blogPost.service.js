@@ -26,6 +26,4 @@ const createPost = async (dataPost, userId) => {
   return { status: 201, data: post.dataValues };
 };
 
-module.exports = {
-  createPost,
-};
+module.exports = { createPost };
